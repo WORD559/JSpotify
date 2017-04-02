@@ -5,10 +5,10 @@ import requests
 
 class Track(object):
     def __init__(self,json):
-        self.url = "https://api.spotify.com"
+        self.__url__ = "https://api.spotify.com"
         self.name = json["name"]
         self.external_urls = json["external_urls"]
-        self.open_url = json["external_urls"]["spotify"]
+        self.url = json["external_urls"]["spotify"]
         self.uri = json["uri"]
         self.id = json["id"]
         self.duration = json["duration_ms"]
@@ -33,10 +33,10 @@ class Track(object):
     
 class Artist(object):
     def __init__(self,json):
-        self.url = "https://api.spotify.com"
+        self.__url__ = "https://api.spotify.com"
         self.name = json["name"]
         self.external_urls = json["external_urls"]
-        self.open_url = json["external_urls"]["spotify"]
+        self.url = json["external_urls"]["spotify"]
         self.uri = json["uri"]
         self.request_url = json["href"]
         self.id = json["id"]
@@ -49,10 +49,10 @@ class Artist(object):
     
 class Album(object):
     def __init__(self,json):
-        self.url = "https://api.spotify.com"
+        self.__url__ = "https://api.spotify.com"
         self.name = json["name"]
         self.external_urls = json["external_urls"]
-        self.open_url = json["external_urls"]["spotify"]
+        self.url = json["external_urls"]["spotify"]
         self.uri = json["uri"]
         self.request_url = json["href"]
         self.art = json["images"][0]["url"]
@@ -71,7 +71,7 @@ class Album(object):
     def get_tracks(self):
         self.tracks = []
         total = 1
-        n = self.url+"/v1/albums/%s/tracks" % self.id
+        n = self.__url__+"/v1/albums/%s/tracks" % self.id
         while len(self.tracks) < total:
             r = requests.get(n)
             j = r.json()
@@ -87,10 +87,10 @@ class Album(object):
 class Spotify(object):
     def __init__(self):
         self.s = requests.session()
-        self.url = "https://api.spotify.com"
+        self.__url__ = "https://api.spotify.com"
 
     def search_albums(self,query):
-        r = self.s.get(self.url+"/v1/search?type=album&q=%s" % query)
+        r = self.s.get(self.__url__+"/v1/search?type=album&q=%s" % query)
         j = r.json()
         print "Got "+str(j["albums"]["total"])+" albums"
         data = []
@@ -100,7 +100,7 @@ class Spotify(object):
         return data
 
     def search_tracks(self,query):
-        r = self.s.get(self.url+"/v1/search?type=track&q=%s" % query)
+        r = self.s.get(self.__url__+"/v1/search?type=track&q=%s" % query)
         j = r.json()
         print "Got "+str(j["tracks"]["total"])+" tracks"
         data = []
@@ -110,7 +110,7 @@ class Spotify(object):
         return data
 
     def search_artists(self,query):
-        r = self.s.get(self.url+"/v1/search?type=artist&q=%s" % query)
+        r = self.s.get(self.__url__+"/v1/search?type=artist&q=%s" % query)
         j = r.json()
         print "Got "+str(j["artists"]["total"])+" artists"
         data = []
