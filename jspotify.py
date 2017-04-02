@@ -1,9 +1,19 @@
 ##Spotify API Library
 #This should be fun.
 
-import requests
+import requests, sys, os
 
-class Track(object):
+class PlatformError(Exception):
+    pass
+
+class OpenInBrowser(object):
+    def open(self):
+        if sys.platform == "win32":
+            os.system("start "+self.uri)
+        else:
+            raise PlatformError("Can only open in Spotify on Windows.")
+
+class Track(OpenInBrowser):
     def __init__(self,json):
         self.__url__ = "https://api.spotify.com"
         self.name = json["name"]
@@ -31,7 +41,7 @@ class Track(object):
     def __repr__(self):
         return "Track('"+self.name+" - "+" & ".join([str(x) for x in self.artists])+"')"
     
-class Artist(object):
+class Artist(OpenInBrowser):
     def __init__(self,json):
         self.__url__ = "https://api.spotify.com"
         self.name = json["name"]
@@ -47,7 +57,7 @@ class Artist(object):
     def __repr__(self):
         return "Artist('"+self.name+"')"
     
-class Album(object):
+class Album(OpenInBrowser):
     def __init__(self,json):
         self.__url__ = "https://api.spotify.com"
         self.name = json["name"]
