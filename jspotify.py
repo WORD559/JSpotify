@@ -6,14 +6,7 @@ import requests, sys, os
 class PlatformError(Exception):
     pass
 
-class OpenInBrowser(object):
-    def open(self):
-        if sys.platform == "win32":
-            os.system("start "+self.uri)
-        else:
-            raise PlatformError("Can only open in Spotify on Windows.")
-
-class Track(OpenInBrowser):
+class Track(object):
     def __init__(self,json):
         self.__url__ = "https://api.spotify.com"
         self.name = json["name"]
@@ -35,13 +28,19 @@ class Track(OpenInBrowser):
         else:
             self.artists = None
 
+    def open(self):
+        if sys.platform == "win32":
+            os.system("start "+self.uri)
+        else:
+            raise PlatformError("Can only open in Spotify on Windows.")
+
     def __str__(self):
         return self.name + " - " + " & ".join([str(x) for x in self.artists])
 
     def __repr__(self):
         return "Track('"+self.name+" - "+" & ".join([str(x) for x in self.artists])+"')"
     
-class Artist(OpenInBrowser):
+class Artist(object):
     def __init__(self,json):
         self.__url__ = "https://api.spotify.com"
         self.name = json["name"]
@@ -51,13 +50,19 @@ class Artist(OpenInBrowser):
         self.request_url = json["href"]
         self.id = json["id"]
 
+    def open(self):
+        if sys.platform == "win32":
+            os.system("start "+self.uri)
+        else:
+            raise PlatformError("Can only open in Spotify on Windows.")
+
     def __str__(self):
         return self.name
 
     def __repr__(self):
         return "Artist('"+self.name+"')"
     
-class Album(OpenInBrowser):
+class Album(object):
     def __init__(self,json):
         self.__url__ = "https://api.spotify.com"
         self.name = json["name"]
@@ -72,11 +77,11 @@ class Album(OpenInBrowser):
         else:
             self.artists = None
 
-    def __str__(self):
-        return self.name + " - " + " & ".join([str(x) for x in self.artists])
-
-    def __repr__(self):
-        return "Album('"+self.name+" - "+" & ".join([str(x) for x in self.artists])+"')"
+    def open(self):
+        if sys.platform == "win32":
+            os.system("start "+self.uri)
+        else:
+            raise PlatformError("Can only open in Spotify on Windows.")
 
     def get_tracks(self):
         self.tracks = []
@@ -93,6 +98,12 @@ class Album(OpenInBrowser):
                 self.tracks[-1].artists = self.artists
                 self.tracks[-1].album = self
             n = j["next"]
+
+    def __str__(self):
+        return self.name + " - " + " & ".join([str(x) for x in self.artists])
+
+    def __repr__(self):
+        return "Album('"+self.name+" - "+" & ".join([str(x) for x in self.artists])+"')"
 
 class Spotify(object):
     def __init__(self):
